@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+set -e
+
+read -p "Enter your domain name: " DOMAIN
+read -p "Enter your E-mail: " EMAIL
+read -s -p "Enter desired db password: " DBPASS
+echo
+
+mysql -u root <<EOF
+ALTER USER 'root'@'localhost' IDENTIFIED BY '$DBPASS';
+CREATE DATABASE wordpress;
+CREATE USER 'wpuser'@'localhost' IDENTIFIED BY '$DBPASS';
+GRANT ALL PRIVILEGES ON wordpress.* TO 'wpuser'@'localhost';
+FLUSH PRIVILEGES;
+EOF
+
+# WordPress setup
+mkdir -p /srv/http/wordpress
+cd /srv/http/wordpress
+wget -q https://wordpress.org/latest.zip
+unzip -q latest.zip
+chown -R http:http /srv/http/wordpress
+
+# Nginx config
+mkdir -p /etc/nginx/sites-available /etc/nginx/sites-enabled
+cat > /etc/nginx/sites-available/wordpress <<EOL
+server {
+    listen 80;
+    server_name $DOMAIN www.$DOMAIN;
+    root /srv/http/wordpress;
+    index index.php index.html;
+
+    location / {
+        try_files \$uri \$uri/ /index.php?\$args;
+    }
+
+    location ~ \.php\$ {
+        include fastcgi.conf;
+        fastcgi_pass unix:/run/php-fpm/php-fpm.sock;
+    }
+}
+EOL
+
+ln -sf /etc/nginx/sites-available/wordpress /etc/nginx/sites-enabled/
+systemctl restart nginx
+
+# SSL with Certbot
+certbot --nginx -d $DOMAIN -d www.$DOMAIN --non-interactive --agree-tos -m $EMAIL
+
+echo "✅ WordPress installed. Visit: https://$DOMAIN"
