@@ -3,7 +3,7 @@ set -e
 
 read -p "Enter your domain name: " DOMAIN
 read -p "Enter your E-mail: " EMAIL
-read -s -p "Enter desired db password: " DBPASS
+read -s -p "Enter the desired db password: " DBPASS
 echo
 
 mysql -u root <<EOF
