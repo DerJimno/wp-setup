@@ -53,6 +53,8 @@ server {
 }
 EOL
 
+sudo sed -i '/^}/i \    include /etc/nginx/sites-enabled/*;' /etc/nginx/nginx.conf
+
 sudo ln -sf /etc/nginx/sites-available/wordpress /etc/nginx/sites-enabled/
 sudo nginx -t && sudo systemctl reload nginx
 
