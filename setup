@@ -18,6 +18,7 @@ sudo mkdir -p /srv/http/wordpress
 cd /srv/http/wordpress
 wget -q https://wordpress.org/latest.zip
 unzip -q latest.zip
+sudo rm -f latest.zip
 sudo chown -R http:http /srv/http/wordpress
 sudo chmod -R 755 /srv/http/wordpress
 
