@@ -26,7 +26,7 @@ sudo chmod -R 755 /srv/http/wordpress
 
 # Nginx config
 sudo mkdir -p /etc/nginx/sites-available /etc/nginx/sites-enabled
-sudo tee /etc/nginx/sites-available/wordpress > /dev/null <<'EOL'
+sudo tee /etc/nginx/sites-available/wordpress > /dev/null <<EOL
 server {
     listen 80;
     server_name $DOMAIN;
