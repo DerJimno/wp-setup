@@ -25,15 +25,24 @@ sudo mkdir -p /etc/nginx/sites-available /etc/nginx/sites-enabled
 cat > /etc/nginx/sites-available/wordpress <<EOL
 server {
     listen 80;
-    server_name $DOMAIN www.$DOMAIN;
-    root /srv/http/wordpress;
+    server_name $DOMAIN;
+    return 301 https://$host$request_uri;
+}
+
+server {
+    listen 443 ssl;
+    server_name $DOMAIN;
+    root /srv/http/wordpress/wordpress;
     index index.php index.html;
 
+    ssl_certificate /etc/letsencrypt/live/$DOMAIN/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/$DOMAIN/privkey.pem;
+
     location / {
-        try_files \$uri \$uri/ /index.php?\$args;
+        try_files $uri $uri/ /index.php?$args;
     }
 
-    location ~ \.php\$ {
+    location ~ \.php$ {
         include fastcgi.conf;
         fastcgi_pass unix:/run/php-fpm/php-fpm.sock;
     }
@@ -44,6 +53,6 @@ ln -sf /etc/nginx/sites-available/wordpress /etc/nginx/sites-enabled/
 systemctl restart nginx
 
 # SSL with Certbot
-certbot --nginx -d $DOMAIN -d www.$DOMAIN --non-interactive --agree-tos -m $EMAIL
+certbot --nginx -d $DOMAIN -m $EMAIL --non-interactive --agree-tos
 
 echo "✅ WordPress installed. Visit: https://$DOMAIN"
