@@ -29,18 +29,9 @@ sudo mkdir -p /etc/nginx/sites-available /etc/nginx/sites-enabled
 sudo tee /etc/nginx/sites-available/wordpress > /dev/null <<EOL
 server {
     listen 80;
-    server_name $DOMAIN;
-    return 301 https://$host$request_uri;
-}
-
-server {
-    listen 443 ssl;
-    server_name $DOMAIN;
+    server_name menaouer.mooo.com;
     root /srv/http/wordpress/wordpress;
     index index.php index.html;
-
-    ssl_certificate /etc/letsencrypt/live/$DOMAIN/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/$DOMAIN/privkey.pem;
 
     location / {
         try_files $uri $uri/ /index.php?$args;
@@ -53,9 +44,12 @@ server {
 }
 EOL
 
-# sudo sed -i '/http\s*{/a \    include /etc/nginx/sites-enabled/*;' /etc/nginx/nginx.conf
-
 sudo ln -sf /etc/nginx/sites-available/wordpress /etc/nginx/sites-enabled/
+
+# sudo sed -i '/http\s*{/a \    include /etc/nginx/sites-enabled/*;' /etc/nginx/nginx.conf
+sed -i '/^http[[:space:]]*{/,/^}/ { /^}/i\
+    include /etc/nginx/sites-enabled/*;
+}' files
 
 sudo nginx -t && sudo systemctl reload nginx
 
