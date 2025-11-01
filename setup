@@ -7,7 +7,6 @@ read -s -p "Enter the desired db password: " DBPASS
 echo
 
 sudo mariadb <<EOF
-ALTER USER 'root'@'localhost' IDENTIFIED BY '$DBPASS';
 CREATE DATABASE wordpress;
 CREATE USER 'wpuser'@'localhost' IDENTIFIED BY '$DBPASS';
 GRANT ALL PRIVILEGES ON wordpress.* TO 'wpuser'@'localhost';
