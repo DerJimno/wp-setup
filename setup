@@ -19,6 +19,7 @@ cd /srv/http/wordpress
 wget -q https://wordpress.org/latest.zip
 unzip -q latest.zip
 chown -R http:http /srv/http/wordpress
+sudo chmod -R 755 /srv/http/wordpress
 
 # Nginx config
 sudo mkdir -p /etc/nginx/sites-available /etc/nginx/sites-enabled
