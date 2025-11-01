@@ -20,6 +20,7 @@ sudo mkdir -p /srv/http/wordpress
 cd /srv/http/wordpress
 sudo wget -q https://wordpress.org/latest.zip
 sudo unzip -q latest.zip
+sudo mv wordpress my-site
 sudo rm -f latest.zip
 sudo chown -R http:http /srv/http/wordpress
 sudo chmod -R 755 /srv/http/wordpress
@@ -30,7 +31,7 @@ sudo tee /etc/nginx/sites-available/wordpress > /dev/null <<EOL
 server {
     listen 80;
     server_name menaouer.mooo.com;
-    root /srv/http/wordpress/wordpress;
+    root /srv/http/wordpress/my-site;
     index index.php index.html;
 
     location / {
@@ -53,8 +54,11 @@ sudo sed -i '/^http[[:space:]]*{/,/^}/ { /^}/i\
 
 sudo nginx -t && sudo systemctl reload nginx
 
-# SSL with Certbot
-sudo certbot --nginx -d $DOMAIN -m $EMAIL --non-interactive --agree-tos
-
+read -p "want to secure your domain with HTTPS? (y/n): " answer
+if [[ "$answer" == "y" ]]; then
+    echo "Certbot working..."
+    # SSL with Certbot
+    sudo certbot --nginx -d $DOMAIN -m $EMAIL --non-interactive --agree-tos
+fi
 
 echo "✅ WordPress installed. Visit: https://$DOMAIN"
