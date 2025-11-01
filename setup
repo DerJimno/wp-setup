@@ -15,14 +15,14 @@ FLUSH PRIVILEGES;
 EOF
 
 # WordPress setup
-mkdir -p /srv/http/wordpress
+sudo mkdir -p /srv/http/wordpress
 cd /srv/http/wordpress
 wget -q https://wordpress.org/latest.zip
 unzip -q latest.zip
 chown -R http:http /srv/http/wordpress
 
 # Nginx config
-mkdir -p /etc/nginx/sites-available /etc/nginx/sites-enabled
+sudo mkdir -p /etc/nginx/sites-available /etc/nginx/sites-enabled
 cat > /etc/nginx/sites-available/wordpress <<EOL
 server {
     listen 80;
