@@ -47,7 +47,7 @@ EOL
 sudo ln -sf /etc/nginx/sites-available/wordpress /etc/nginx/sites-enabled/
 
 # sudo sed -i '/http\s*{/a \    include /etc/nginx/sites-enabled/*;' /etc/nginx/nginx.conf
-sed -i '/^http[[:space:]]*{/,/^}/ { /^}/i\
+sudo sed -i '/^http[[:space:]]*{/,/^}/ { /^}/i\
     include /etc/nginx/sites-enabled/*;
 }' /etc/nginx/nginx.conf
 
