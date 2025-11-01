@@ -18,7 +18,7 @@ sudo mkdir -p /srv/http/wordpress
 cd /srv/http/wordpress
 wget -q https://wordpress.org/latest.zip
 unzip -q latest.zip
-chown -R http:http /srv/http/wordpress
+sudo chown -R http:http /srv/http/wordpress
 sudo chmod -R 755 /srv/http/wordpress
 
 # Nginx config
@@ -51,9 +51,9 @@ server {
 EOL
 
 ln -sf /etc/nginx/sites-available/wordpress /etc/nginx/sites-enabled/
-systemctl restart nginx
+sudo nginx -t && sudo systemctl reload nginx
 
 # SSL with Certbot
-certbot --nginx -d $DOMAIN -m $EMAIL --non-interactive --agree-tos
+sudo certbot --nginx -d $DOMAIN -m $EMAIL --non-interactive --agree-tos
 
 echo "✅ WordPress installed. Visit: https://$DOMAIN"
